@@ -1,0 +1,32 @@
+{
+  "name": "openapi-url",
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "description": "typed url builder that uses openapi-typescript paths type",
+  "scripts": {
+    "dev": "bun --watch build.mjs",
+    "build": "bun run build.mjs",
+    "prepublishOnly": "bun run build"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "openapi", "url", "typescript"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/adriaanwm/openapi-url#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adriaanwm/openapi-url.git"
+  },
+  "bugs": "https://github.com/adriaanwm/openapi-url/issues",
+  "author": "Adriaan Mulder",
+  "devDependencies": {
+    "bun-plugin-dts": "^0.2.1",
+    "@types/bun": "^1.0.0",
+    "typescript": "^5.2.2"
+  }
+}

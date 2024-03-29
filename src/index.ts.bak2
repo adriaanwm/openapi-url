@@ -1,0 +1,57 @@
+export const ListQueryStyle = {
+  commaSeparated: 'commaSeparated',
+  repeatQuery: 'repeatQuery'
+} as const
+
+interface Options {
+  listQueryStyle?: keyof typeof ListQueryStyle
+  baseUrl: string
+}
+
+// type ArgsArgs<T> = [T] extends [never] ? {args?: T} : { args: T }
+
+// type ColorArgs<T> =
+//   "color" extends keyof T ? Pick<T, "color"> : { color?: never }
+
+// type Args2<T> = T extends {parameters: {path: infer Args}} ? {args: Args} : {args?: never}
+
+type Args2<T> = 'parameters' extends keyof T ? ('path' extends keyof T['parameters'] ? Pick<T['parameters'], 'path'> : {args?: never}) : {args?: never}
+
+type UrlBuilderFunction = <Paths>(options: Options) =>
+  <
+    Path extends Extract<keyof Paths, string>,
+    Method extends Extract<keyof Paths[Path], string>,
+    Query extends Paths[Path][Method] extends { parameters: { query?: any } }
+      ? Paths[Path][Method]['parameters']['query']
+      : {}
+  >(config:  {
+    path: Path,
+    method: Method,
+    queries?: Query,
+    options?: Partial<Options>,
+    args?: unknown
+  } & Args2<Paths[Path][Method]>) => URL
+
+export const urlBuilder: UrlBuilderFunction = (defaultOptions) => ({
+  path, method: _method, args, queries = {}, options
+}) => {
+  options = {...defaultOptions, ...(options || {})}
+  const pathWithArgs = Object.entries(args || {}).reduce(
+    (p: string, [k, v]) => p.replace(`{${k}}`, encodeURIComponent(String(v))),
+    path
+  );
+  const url = new URL(`${options.baseUrl}${pathWithArgs}`)
+  const listQueryStyle = options.listQueryStyle || ListQueryStyle.commaSeparated
+  Object.entries(queries).forEach(([key, value]) => {
+    if (Array.isArray(value)) {
+      if (listQueryStyle == ListQueryStyle.commaSeparated) {
+        url.searchParams.set(key, value.join(','))
+      } else {
+        value.forEach(subvalue => url.searchParams.append(key, String(subvalue)))
+      }
+    } else {
+      url.searchParams.append(key, String(value))
+    }
+  })
+  return url 
+}

@@ -1,5 +1,5 @@
 import dts from 'bun-plugin-dts'
-import 'index.ts'
+import 'index.ts.bak2'
 
 await Bun.build({
   entrypoints: ['./src/index.ts'],

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test'
-import { ListQueryStyle, urlBuilder } from '../src'
+import { ListQueryStyle, urlBuilder } from '../src/index'
 import { paths as Paths } from '../openapitypes'
 
 const BASE_URL = 'http://example.com'
